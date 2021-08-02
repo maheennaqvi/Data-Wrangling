@@ -2,9 +2,9 @@
 library(tidyverse)
 library(readxl)
 
-bikes_tbl           <- read_excel("data/bike_sales/data_raw/bikes.xlsx")
-orderlines_tbl      <- read_excel("data/bike_sales/data_raw/orderlines.xlsx")
-bike_orderlines_tbl <- read_rds("data/bike_sales/data_wrangled/bike_orderlines.rds")
+bikes_tbl           <- read_excel("00_data/bike_sales/data_raw/bikes.xlsx")
+orderlines_tbl      <- read_excel("00_data/bike_sales/data_raw/orderlines.xlsx")
+bike_orderlines_tbl <- read_rds("00_data/bike_sales/data_wrangled/bike_orderlines.rds")
 
 bikes_tbl
 orderlines_tbl
@@ -12,23 +12,29 @@ bike_orderlines_tbl %>% glimpse()
 
 bike_orderlines_tbl %>% 
     select(order_date, order_id, order_line) 
+
 bike_orderlines_tbl %>% 
-    select(1:3) #from 1 to 3 col 
+    select(1:3)
 bike_orderlines_tbl %>%
     select(starts_with("order_"))
+
 bike_orderlines_tbl %>%
     select(order_date, total_price, category_1, category_2)
+
 bike_orderlines_tbl %>%
     select(bikeshop_name:state, everything())
+
 bike_orderlines_tbl %>% 
     select(starts_with("price"))
+
 bike_orderlines_tbl %>% 
     select(total_price) %>%
     pull(total_price) %>% 
     mean()
 
 bike_orderlines_tbl %>%
-    pull(model) #extract data if u need it 
+    pull(model)
+
 bike_orderlines_tbl %>%
     select_if(is.character)
 
@@ -42,6 +48,7 @@ bikes_tbl %>%
     select(model, price) %>%
     arrange(desc(price)) %>%
     View()
+
 bikes_tbl %>% 
     select(model, price) %>% 
     filter(price > mean(price)) 
@@ -71,7 +78,7 @@ bike_orderlines_tbl %>%
 bike_orderlines_tbl %>%
     filter(category_2 != "Over Mountain")  
 
-bike_orderlines_tbl %>% #gives everything except for foloowing 3 categories
+bike_orderlines_tbl %>% 
     filter(!(category_2 %in% c ("Over Mountain", "Trail", "Endurance Road")))
 
 bikes_tbl %>%
@@ -89,7 +96,7 @@ bikes_tbl %>%
 bikes_tbl %>%
     arrange(desc(price)) %>%
     slice(93:97)
-    
+
 bike_orderlines_tbl %>%
     distinct(category_1)
 
@@ -105,7 +112,7 @@ bike_orderlines_prices <- bike_orderlines_tbl %>%
 
 bike_orderlines_prices %>%
     mutate(total_price = log(total_price))
-   
+
 bike_orderlines_prices %>%    
     mutate(total_price_log = log(total_price)) %>%
     mutate(total_price_sqrt = total_price^0.5)
@@ -192,7 +199,7 @@ bikeshop_revenue_tbl %>%
         'Primary Caegory' = category_1,
         Sales = sales
     )
-    
+
 bikeshop_revenue_tbl %>%
     set_names(c ("Bikeshop Name", "Primary Category", "Sales"))
 
@@ -225,7 +232,6 @@ bike_orderlines_tbl %>%
     bind_cols(
         bike_orderlines_tbl %>% select(order_id)
     )
-
 train_tbl <- bike_orderlines_tbl %>%
     slice(1:(nrow(.)/2))
 
@@ -247,7 +253,6 @@ bike_orderlines_tbl %>%
         month = as.numeric(month), 
         day = as.numeric(day)
     ) %>%
-    #unite
     unite(order_date_unite, year, month, day, sep = "-", remove = FALSE) %>%
     mutate(order_date_unite = as.Date(order_date_unite))
         
